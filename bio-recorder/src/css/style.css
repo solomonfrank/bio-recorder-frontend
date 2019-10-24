@@ -1,0 +1,25 @@
+.navbar__bg{
+    background-color:rgba(255,184,0)
+}
+
+.form__wrapper {
+    margin-left: auto;
+    margin-right:auto;
+    margin-top:20px;
+
+}
+
+.btn__bg {
+    border: 1px solid rgb(209, 158, 29);
+    color: rgb(209, 158, 29);
+    font-size: 19px;
+    font-weight: 400;
+  
+}
+.btn__bg:focus {
+background-color:rgb(209, 158, 29);
+}
+
+.btn__view {
+    margin-right: 10px;
+}
