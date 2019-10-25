@@ -25,7 +25,7 @@ fetchAllUser = async  (event) => {
    
   }
 
- let { data } = await axios.get('http://localhost:5000/api/v1/users', {
+ let { data } = await axios.get('https://bio-recorder.herokuapp.com/api/v1/users', {
     headers: headers
   } ).catch(err => console.log(err.stack))
  
@@ -51,7 +51,7 @@ const headers = {
    
   }
 
- let { data } = await axios.delete(`http://localhost:5000/api/v1/user/delete/${id}`, {
+ let { data } = await axios.delete(`https://bio-recorder.herokuapp.com//api/v1/user/delete/${id}`, {
     headers: headers
   } ).catch(err => console.log(err.stack))
 console.log(data)
