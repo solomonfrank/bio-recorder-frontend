@@ -51,7 +51,7 @@ const headers = {
    
   }
 
- let { data } = await axios.delete(`https://bio-recorder.herokuapp.com//api/v1/user/delete/${id}`, {
+ let { data } = await axios.delete(`https://bio-recorder.herokuapp.com/api/v1/user/delete/${id}`, {
     headers: headers
   } ).catch(err => console.log(err.stack))
 console.log(data)
