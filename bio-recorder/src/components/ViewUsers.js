@@ -72,8 +72,8 @@ renderAttr = () => {
       )
     } else {
         return (
-            <React.Fragment>
-                 <Table  className ="table-responsive" striped bordered hover>
+            <div className ="table-responsive">
+                 <Table  className="table" striped bordered hover>
         <thead>
             <tr>
             <th>#</th>
@@ -120,7 +120,7 @@ renderAttr = () => {
 
 </tbody>
 </Table>
-     </React.Fragment>
+     </div>
         )
      
     }
@@ -134,7 +134,7 @@ render () {
            
            <div className="col-md-6 form__wrapper">
                 {  this.state.flashMessage && this.renderFlash(this.state.flashMessage )}
-               <button onClick ={ (event) => this.fetchAllUser(event)} className = "btn btn-primary"> View All User</button>
+               <button onClick ={ (event) => this.fetchAllUser(event)} className = "btn btn__view btn-primary"> View All User</button>
                { this.renderAttr()}
            </div>
         )

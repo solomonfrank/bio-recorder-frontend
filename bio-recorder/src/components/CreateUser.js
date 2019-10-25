@@ -77,7 +77,7 @@ submitForm = async  (event) => {
    
   }
 
- let user = await axios.post('http://localhost:5000/api/v1/user/create', body, {
+ let user = await axios.post('https://bio-recorder.herokuapp.com/api/v1/user/create', body, {
     headers: headers
   } ).catch(err => console.log(err.stack))
 const { data } = user;
