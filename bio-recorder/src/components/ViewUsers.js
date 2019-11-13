@@ -1,147 +1,87 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
-
-import axios from 'axios';
-
-
-
-
+import { Link , withRouter } from 'react-router-dom'
+import { connect } from 'react-redux';
+import { fetchUsers, removeUser}  from '../redux/actions/userAction';
 
 class ViewUser extends Component {
-   state = {
-       users: [],
-       flashMessage: ""
+  state = {
+    users: [],
+    flashMessage: ""
    }
-count = 0;
 
+  count = 0;
 
-
-
-fetchAllUser = async  (event) => {
-   event.preventDefault();
-
-  const headers = {
-    'Content-Type': 'application/json',
-   
-  }
-
- let { data } = await axios.get('https://bio-recorder.herokuapp.com/api/v1/users', {
-    headers: headers
-  } ).catch(err => console.log(err.stack))
- 
-  this.setState({ users: [...data.payload ]})
-
-}
-
-succesFlashMessage = ( { message }) =>( this.setState({flashMessage : message}))
-
-renderFlash = (message) => {
-    console.log(message)
-    return (
-        <div className="alert alert-warning" role="alert">
-        { message }
-       </div>
-    )
-}
-
-deleteUser = async (event) => {
-const id =  event.target.dataset.val;
-const headers = {
-    'Content-Type': 'application/json',
-   
-  }
-
- let { data } = await axios.delete(`https://bio-recorder.herokuapp.com/api/v1/user/delete/${id}`, {
-    headers: headers
-  } ).catch(err => console.log(err.stack))
-console.log(data)
- const { first_name } = data.payload[0];
- console.log(first_name)
- let arr = this.state.users.filter(item => item.first_name !== first_name)
- console.log(arr)
-this.setState({ users:arr })
-
-}
 
 renderAttr = () => {
-    if(this.state.users.length < 1) {
-      return (
-      <div className="title">
-          <p>No records  yet, click on the button to view all</p>
-          </div>
-      )
-    } else {
-        return (
-            <div className ="table-responsive">
-                 <Table  className="table" striped bordered hover>
-        <thead>
-            <tr>
-            <th>#</th>
-            <th>First Name</th>
-            <th>Surname</th>
-            <th>Birth Date</th>
-            <th>Age</th>
-
-            <th>Action</th>
-
-            </tr>
-        </thead>
-        <tbody>
-
-{this.state.users.map(item => {
-    const birthDate = new Date(`${item.birth_date}`);
- 
-    const curr = new Date();
-    const diff = (curr - birthDate) * (-1); // This is the difference in milliseconds
-    const  age = Math.floor(diff/31557600000);
-    this.count++
-
+    
+  if (this.props.users.users.length < 1) {
     return (
-        <React.Fragment>
-          <tr>
-           <td>{this.count}</td>
-                <td>{item.first_name}</td>
-                <td>{item.surname}</td>
-                <td>{item.birth_date}</td>
-                <td>{age}</td>
-                <td>
-                    <button  key={item.id } data-userId={item.id} className="btn  btn__view btn-outline-primary">View</button>
-                    <button  key={item.id } data-userId={item.id} onClick={ this.EditUser}  className="btn  btn__view btn-primary">Edit</button>
-                    <button  key={item.id } data-val={item.id} onClick={ this.deleteUser} key={item.id } data-userId={item.id} className="btn   btn__view btn-danger">Delete</button>
-            </td>
-           </tr>
-          
-        </React.Fragment>
-        
+    <div className="title">
+        <p>No records  yet, click on the button to view all</p>
+        </div>
     )
-})}
+  } else {
+      return (
+         <div className ="table-responsive">
+            <Table  className="table" striped bordered hover>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>First Name</th>
+                  <th>Surname</th>
+                  <th>Birth Date</th>
+                  <th>Age</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                 { this.props.users.users.map(item => {
+                  const birthDate = new Date(`${item.birth_date}`);
+                  const curr = new Date();
+                  const diff = (curr - birthDate) * (-1); // This is the difference in milliseconds
+                  const  age = Math.floor(diff/31557600000);
+                  this.count++
+                  return (
+                    <tr key={item.id}>
+                      <td>{this.count}</td>
+                        <td>{item.first_name}</td>
+                        <td>{item.surname}</td>
+                        <td>{item.birth_date}</td>
+                        <td>{age}</td>
+                        <td>
+                          <Link to={`/users/${item.id}`} data-userid={item.id} className="btn  btn__view btn-outline-primary">View</Link>
+                          <Link   to={`/edit/${item.id}`} data-userid={item.id} onClick={ this.EditUser}  className="btn  btn__view btn-primary">Edit</Link>
+                          <button   data-val={item.id} onClick={()=> this.props.deleteUser(item)} key={item.id } data-userid={item.id} className="btn   btn__view btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                    )
+                    })
+                  }
+                </tbody>
+              </Table>
+            </div>
+          )
+        }
+      }
 
-
-
-</tbody>
-</Table>
-     </div>
-        )
-     
-    }
-      
+render() {
+  return (
+    <div className="col-md-6 form__wrapper">
+      {  this.state.flashMessage && this.renderFlash(this.state.flashMessage )}
+      <button onClick ={ () => this.props.fetchAllUser()} className = "btn btn__view btn-primary"> View All User</button>
+      { this.renderAttr()}
+    </div>
+    )
+  }
 }
 
-render () {
+const mapDispatchToProps = (dispatch) => ({
+  fetchAllUser: () => dispatch(fetchUsers()),
+  deleteUser: user => dispatch(removeUser(user))
+})
 
-        return (
-
-           
-           <div className="col-md-6 form__wrapper">
-                {  this.state.flashMessage && this.renderFlash(this.state.flashMessage )}
-               <button onClick ={ (event) => this.fetchAllUser(event)} className = "btn btn__view btn-primary"> View All User</button>
-               { this.renderAttr()}
-           </div>
-        )
-    }
-
-
-}
-
-
-export default ViewUser;
+const mapStateToProps = (state) =>({
+  users: state.users
+})
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ViewUser));

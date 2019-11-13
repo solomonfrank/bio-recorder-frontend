@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import  { Modal, Button } from 'react-bootstrap'
+import  { Modal, Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { toggleModal } from '../redux/actions/userAction'
 
 
 // const AttributeModal = () => {
@@ -27,27 +29,28 @@ import  { Modal, Button } from 'react-bootstrap'
 // )
 // }
 class  ModalAttr extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   state = {
- name: '',
+    name: '',
     value: ''
   };
 
-   addAttrName = event => (this.setState( { name: event.target.value}))
+  addAttrName = event => (this.setState( { name: event.target.value}))
 
-   addAttrValue = event => (this.setState( { value: event.target.value }))
+  addAttrValue = event => (this.setState( { value: event.target.value }))
 
-   addAttrToDom = () => {
+  addAttrToDom = () => {
 
   const data = {};
   const attrName = this.state.name;
 
   data[attrName] = this.state.value;
-  this.props.addAttr(data);
+
+  if(attrName && this.state.value) {
+    this.props.addAttr(data);
+    this.props.modalShow()
+    }
   }
+
     
     
   render() {
@@ -66,16 +69,16 @@ class  ModalAttr extends Component {
         <Modal.Body>
         <div className="form-group">
               <label for="surname">Attribute Name</label>
-              <input type="text" className="form-control" onChange = { (event) => this.addAttrName(event) }  id="exampleInputPassword1" placeholder="e.g height"/>
+              <input type="text" className="form-control" onChange = { (event) => this.addAttrName(event) } required id="exampleInputPassword1" placeholder="e.g height"/>
           </div>
 
           <div className="form-group">
               <label for="attr-val">Value</label>
-              <input type="text" className="form-control" onChange = { (event) => this.addAttrValue(event) } id="attr-val" placeholder="e.g 10m"/>
+              <input type="text" className="form-control"  required onChange = { (event) => this.addAttrValue(event) } id="attr-val" placeholder="e.g 10m"/>
                     </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="outline-primary" size="md" onClick={ () => this.props.hideModal()}>Close</Button>
+          <Button variant="outline-primary" size="md" onClick={ () => this.props.modalShow()}>Close</Button>
           <Button   variant="warning" size="md" onClick={ () => this.addAttrToDom() }>Add</Button>
         </Modal.Footer>
       </Modal>
@@ -86,5 +89,12 @@ class  ModalAttr extends Component {
   }
 
  
-
-export default ModalAttr;
+  const mapDispatchToProps = dispatch => ({
+  
+    modalShow: () => dispatch(toggleModal())
+  })
+  const mapStateToProps = ({ isHidden, users: { users} }) => ({
+   
+    isHidden
+  })
+export default connect( mapStateToProps, mapDispatchToProps)(ModalAttr);
